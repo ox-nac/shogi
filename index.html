@@ -1,1 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>将棋道場</title>
+  <!-- Google Fonts: Shippori Mincho -->
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho&display=swap" rel="stylesheet">
+  <!-- CSSファイルの読み込み -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ゲーム全体をラップするコンテナ -->
+  <div id="game-wrapper">
+      <div id="kanrinin">
+      <h1>管理人情報</h1>
+        <h2>涼一</h2>
+      </div>
+    
+    <div id="title-container">
+      <h1>将棋道場</h1>
+    </div>
+        <div id="shogirule">
+        <h1 style="text-align: left;">ルール説明<h1>
+        </div>
+        <div id="shogirulecontent">
+        <h2 style="text-align: left;">
+            <p>・二人対戦用の将棋ゲームです。</p>
+            <p>・スマホ一台で対戦が可能です。</p>
+            <p>・手持ち時間は先手・後手、それぞれ10分です。</p>
+            <p>・手番は下にある「振り駒」で決定します。</p>
+            <p>・「と金」が3枚以上であなたが「先手」です。</p>
+            <p>・「歩」が3枚以上であなたが「後手」です。</p>
+            <p>・下の「振る」ボタンをタップすると、振り駒が始まります。</p>
+            <p>・手番決定後、すぐに対局開始です。</p>
+        </div>
+
+        <h2>
+        
+    </div>
+    <!-- 振り駒コンテナ -->
+    <div id="furikoma-container">
+      <div id="furikoma-pieces">
+        <!-- ここに振り駒用の「歩」駒が5つ表示される -->
+      </div>
+      <button id="toss-button">振る</button>
+    </div>
+    <!-- 盤面コンテナ（振り駒完了後に表示） -->
+    <div id="board-container" style="display: none;">
+      <div id="shogi-board">
+        <!-- 盤面セルは script.js により生成 -->
+      </div>
+      <!-- 持ち駒エリア -->
+      <div id="top-hand-container">
+        <div id="top-hand"></div>
+      </div>
+      <div id="bottom-hand-container">
+        <div id="bottom-hand"></div>
+      </div>
+      <!-- 初期配置ラベル -->
+      <div id="gote-label" class="side-label gote-label">後手</div>
+      <div id="sente-label" class="side-label sente-label">先手</div>
+      <!-- タイマー表示用 -->
+      <div id="gote-timer" class="timer"></div>
+      <div id="sente-timer" class="timer"></div>
+    </div>
+  </div>
+  
+  <!-- JavaScriptファイルの読み込み -->
+  <script src="script.js"></script>
+  
+  <!-- ユーザーエージェント判定 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const isMobileOrTablet =
+        /Android.*Mobile|iPhone|iPad|iPod/i.test(navigator.userAgent) 
+    
+      if (!isMobileOrTablet) {
+        document.body.innerHTML = "<div style='text-align: center; margin-top: 50px; font-size: 24px;'>申し訳ありません。このページはスマホでのみ表示可能です。</div>";
+      }
+    });
+  </script>
+</body>
+</html>
 
