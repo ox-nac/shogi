@@ -1,1 +1,368 @@
 
+/* ----------------------------- */
+/* Base Settings (Smartphone/Tablet) */
+/* ----------------------------- */
+html, body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* 不要なスクロールを防止 */
+  background-color: #FFFFDD;
+}
+
+/* CSS変数による調整用設定 */
+:root {
+  --scale-factor: 0.995;
+  --board-offset-x: -1.5px;
+  --board-offset-y: -120.5px;
+  
+  --host-icon-height: calc(30px * var(--scale-factor));
+  --host-twitter-font-size: calc(30px * var(--scale-factor));
+  --title-font-size: calc(100px * var(--scale-factor));
+  --title-line-height: 1.2;
+  
+  --board-width: calc(100vw * var(--scale-factor));
+  --board-height: calc(100vw * var(--scale-factor));
+  --cell-size: calc((100vw * var(--scale-factor)) / 9);
+  --piece-width: calc(var(--cell-size) * 0.9);
+  --piece-height: calc(var(--cell-size) * 0.9);
+  --piece-font-size: calc(var(--piece-height) * 0.5);
+  --captured-area-height: calc(50px * var(--scale-factor));
+  --header-bottom-margin: calc(10px * var(--scale-factor));
+  
+  /* 振りごまスペースの座標調整用変数 */
+  --furikoma-top: 50%;
+  --furikoma-left: 50%;
+  
+  /* 管理者情報の座標調整用変数（必要に応じて調整してください） */
+  --info-top: 40%;
+  --info-left: 50%;
+  
+  /* 持ち駒の位置調整用変数 */
+  --top-hand-top: calc(-118px * var(--scale-factor));
+  --top-hand-right: calc(-40px * var(--scale-factor));
+  --top-hand-width: calc(1000px * var(--scale-factor));
+  --top-hand-height: calc(100px * var(--scale-factor));
+  
+  --bottom-hand-top: calc(101vw * var(--scale-factor));
+  --bottom-hand-left: calc(4px * var(--scale-factor));
+  --bottom-hand-width: calc(100vw * var(--scale-factor));
+  --bottom-hand-height: calc(50px * var(--scale-factor));
+  
+  /* タイマー配置・背景調整用変数 */
+  --sente-timer-offset-y: calc(-1.5 * var(--cell-size));
+  --gote-timer-offset-y: calc(-1.5 * var(--cell-size));
+  --sente-timer-offset-x: 0;
+  --gote-timer-offset-x: 0;
+  
+  --timer-padding-vertical: 2px;
+  --timer-padding-horizontal: 8px;
+  
+  /* 反転後の座標調整用変数 */
+  --flip-offset-x: -2px;
+  --flip-offset-y: 220px;
+}
+
+/* ----------------------------- */
+/* 全体のゲームUIラッパー（振りごま結果で上下反転） */
+/* ----------------------------- */
+#game-wrapper.flipped {
+  transform: rotate(180deg) translate(var(--flip-offset-x), var(--flip-offset-y));
+}
+
+/* ----------------------------- */
+/* ヘッダー */
+/* ----------------------------- */
+
+#kanrinin h1 {
+  font-size: calc(35px * var(--scale-factor));
+  padding-left: 30px;
+  padding-top: 40px;
+}
+
+#kanrinin h2 {
+  font-size: calc(30px * var(--scale-factor));
+  text-align: center;
+}
+
+#title-container h1 {
+  font-size: calc(100px * var(--scale-factor));
+  text-align: center;
+  margin: 0;
+}
+
+#shogirule {
+  padding-left: 40px;
+  font-size: calc(25px * var(--scale-factor));
+}
+
+#shogirulecontent {
+  padding-left: 70px;
+  font-size: calc(18px * var(--scale-factor));
+}
+
+#sponsor-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: calc(5px * var(--scale-factor));
+}
+.sponsor-text {
+  margin-right: calc(10px * var(--scale-factor));
+  font-size: calc(16px * var(--scale-factor));
+}
+.host-container {
+  display: flex;
+  align-items: center;
+}
+.host-icon {
+  width: calc(30px * var(--scale-factor));
+  height: auto;
+  margin-right: calc(5px * var(--scale-factor));
+}
+.host-twitter {
+  font-size: calc(16px * var(--scale-factor));
+}
+
+/* ----------------------------- */
+/* 管理者情報（info-container） */
+/* ----------------------------- */
+/* ※index.html内にinfo-containerを追加した場合のみ有効 */
+#info-container {
+  position: absolute;
+  top: var(--info-top);
+  left: var(--info-left);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 6000;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: calc(10px * var(--scale-factor));
+  border-radius: calc(5px * var(--scale-factor));
+}
+#info-text {
+  font-size: calc(18px * var(--scale-factor));
+  margin-bottom: calc(5px * var(--scale-factor));
+}
+#info-link a {
+  text-decoration: none;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ----------------------------- */
+/* 振りごまスペース */
+/* ----------------------------- */
+#furikoma-container {
+  position: absolute;
+  top: var(--furikoma-top);
+  left: var(--furikoma-left);
+  transform: translate(-50%, 220%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+  background-color: #FFFFDD;
+  padding: calc(20px * var(--scale-factor));
+  border: calc(2px * var(--scale-factor)) solid black;
+  border-radius: calc(10px * var(--scale-factor));
+}
+#furikoma-pieces {
+  display: flex;
+  gap: calc(10px * var(--scale-factor));
+  margin-bottom: calc(20px * var(--scale-factor));
+}
+#toss-button {
+  font-size: calc(20px * var(--scale-factor));
+  padding: calc(10px * var(--scale-factor)) calc(20px * var(--scale-factor));
+  cursor: pointer;
+}
+
+/* ----------------------------- */
+/* Board and Captured Pieces Layout */
+/* ----------------------------- */
+/* 1) board-container を基準に相対配置できるように */
+/* ❶ 盤面コンテナはすでに絶対配置ですが、
+      position:absolute のまま、子要素の含む基準になります */
+#board-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width:  var(--board-width);
+  height: var(--board-height);
+  transform: translate(-50%, -50%);
+}
+
+/* ❷ 後手側の持ち駒エリアを「盤面上辺から10%上の位置」に中央揃え */
+/* ── 後手（上側）の持ち駒コンテナ ── */
+#top-hand-container {
+  position: absolute;
+  top:    -12%;       /* 盤面上辺から12%上 */
+  right:   2%;        /* 盤面右端から7%内側にぴったり */
+  /* 幅は auto（デフォルト）＝中身に合わせる */
+  display: flex;      /* そのまま中の #top-hand を並べるだけ */
+  z-index: 1000;
+}
+
+/* ── 先手（下側）の持ち駒コンテナ ── */
+#bottom-hand-container {
+  position: absolute;
+  top:    102%;      /* 盤面下辺から2%下  */
+  left:    2%;       /* 盤面左端から7%内側にぴったり */
+  display: flex;
+  z-index: 1000;
+}
+
+/* ── 中身の並び方 ── */
+/* 後手：最初の駒を右端、以降は左へ */
+#top-hand {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: calc(5px * var(--scale-factor));
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* 先手：最初の駒を左端、以降は右へ */
+#bottom-hand {
+  display: flex;
+  flex-direction: row;
+  gap: calc(5px * var(--scale-factor));
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* ----------------------------- */
+/* 最初に取った駒だけ端から内側にずらす */
+/* ----------------------------- */
+/* 後手（上側）：row-reverse なので last-child を右端から内側へ */
+#top-hand .piece:last-child {
+  margin-right: calc(5px * var(--scale-factor));
+}
+
+/* 先手（下側）：row なので first-child を左端から内側へ */
+#bottom-hand .piece:first-child {
+  margin-left: calc(5px * var(--scale-factor));
+}
+
+#top-hand .piece:last-child { /* … */ }
+#bottom-hand .piece:first-child { /* … */ }
+
+
+
+#shogi-board {
+  display: grid;
+  grid-template-columns: repeat(9, var(--cell-size));
+  grid-template-rows: repeat(9, var(--cell-size));
+  border: calc(2px * var(--scale-factor)) solid black;
+  width: var(--board-width);
+  height: var(--board-height);
+}
+
+/* ----------------------------- */
+/* Board Cells and Pieces */
+/* ----------------------------- */
+.cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border: calc(1px * var(--scale-factor)) solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(20px * var(--scale-factor));
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #FFCC66;
+}
+.piece {
+  background-color: #CD853F;
+  border: calc(1px * var(--scale-factor)) solid rgba(0, 0, 0, 0.1);
+  width: var(--piece-width);
+  height: var(--piece-height);
+  position: relative;
+  overflow: visible;
+  clip-path: polygon(50% 0%, 85% 15%, 96% 98%, 4% 98%, 15% 15%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  font-family: 'Shippori Mincho', serif;
+  font-size: var(--piece-font-size);
+}
+
+/* ----------------------------- */
+/* 持ち駒・成り駒などの追加スタイル */
+/* ----------------------------- */
+.promoted {
+  color: red;
+}
+.selected-hand {
+  outline: 2px solid blue;
+}
+.small-promoted {
+  font-size: 1.8em;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+}
+
+/* ----------------------------- */
+/* タイマー用スタイル */
+/* ----------------------------- */
+.timer {
+  position: absolute;
+  font-family: 'Shippori Mincho', serif;
+  font-weight: bold;
+  font-size: calc(50px * var(--scale-factor));
+  color: black;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: var(--timer-padding-vertical) var(--timer-padding-horizontal);
+  border-radius: 2px;
+  z-index: 3000;
+}
+.timer.red {
+  color: red;
+}
+#sente-timer {
+  bottom: calc(var(--sente-timer-offset-y));
+  right: var(--sente-timer-offset-x);
+}
+#gote-timer {
+  top: calc(var(--gote-timer-offset-y));
+  left: var(--gote-timer-offset-x);
+  transform: rotate(180deg);
+}
+
+/* ----------------------------- */
+/* 初期配置ラベル */
+/* ----------------------------- */
+.side-label {
+  position: absolute;
+  font-family: 'Shippori Mincho', serif;
+  font-weight: bold;
+  font-size: calc(50px * var(--scale-factor));
+  z-index: 3000;
+}
+.gote-label {
+  top: calc(-0.7 * var(--cell-size));
+  left: 0;
+  transform: rotate(180deg);
+}
+.sente-label {
+  bottom: calc(-0.7 * var(--cell-size));
+  right: 0;
+}
+.piece .piece-count {
+  position: absolute;
+  bottom: calc(-5px * var(--scale-factor));
+  right: 0;
+  color: black;
+  font-size: calc(25px * var(--scale-factor));
+  padding: 0 calc(7px * var(--scale-factor));
+  border-radius: calc(5px * var(--scale-factor));
+}
+.rotated {
+  transform: rotate(180deg);
+}
+
+
